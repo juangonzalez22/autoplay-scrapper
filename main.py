@@ -1,11 +1,14 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
+import os
 import lyricsgenius
 
 # ===============================
 # Configuración de Genius
 # ===============================
-API_KEY = "vBq759aQalzG8XzSJkBkOL8lMZTpaCLPB3WtOVKEPhP2mD-gWNOO-RWD6mAHAXiz"
+API_KEY = os.environ.get("GENIUS_API_KEY")
+if not API_KEY:
+    raise ValueError("GENIUS_API_KEY no está definida en las variables de entorno")
 genius = lyricsgenius.Genius(access_token=API_KEY)
 genius.verbose = False
 genius.remove_section_headers = True
