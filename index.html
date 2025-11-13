@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyrics API</title>
+    <style>
+        body { font-family: Arial; margin: 40px; background: #f5f5f5; }
+        h1 { color: #333; }
+        input, button { padding: 8px; margin: 5px 0; font-size: 16px; }
+        #lyrics { white-space: pre-wrap; background: #fff; padding: 20px; border-radius: 8px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Buscar Letras de Canciones</h1>
+    <label>Artista:</label><br>
+    <input type="text" id="artist" placeholder="Ej: Twenty One Pilots"><br>
+    <label>Canción:</label><br>
+    <input type="text" id="song" placeholder="Ej: The Contract"><br>
+    <button onclick="fetchLyrics()">Obtener Letra</button>
+
+    <div id="lyrics"></div>
+
+    <script>
+        async function fetchLyrics() {
+            const artist = document.getElementById('artist').value;
+            const song = document.getElementById('song').value;
+            const lyricsDiv = document.getElementById('lyrics');
+            lyricsDiv.textContent = "Cargando...";
+
+            try {
+                const response = await fetch(`/lyrics?artist=${encodeURIComponent(artist)}&song=${encodeURIComponent(song)}`);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    lyricsDiv.textContent = "Error: " + errorData.detail;
+                    return;
+                }
+                const data = await response.json();
+                lyricsDiv.textContent = data.lyrics;
+            } catch (err) {
+                lyricsDiv.textContent = "Error de conexión a la API.";
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>
